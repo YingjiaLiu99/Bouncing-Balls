@@ -7,14 +7,15 @@ public class Ball {
 	private Circle circle;
 	private double velocityX;
 	private double velocityY;
+	private double speedCoefficient = 1.0;
 	// Coefficient of Restitution (0 = no bounce, 1 = perfect bounce)
 	private double restitutionCoefficient = 0.8;
 
 	public Ball(double centerX, double centerY, double radius, Color color) {
         this.circle = new Circle(centerX, centerY, radius);
         this.circle.setFill(color);
-        this.velocityX = 0; // Initial horizontal velocity
-        this.velocityY = 0; // Initial vertical velocity
+        this.velocityX = -(10*Math.random())+5; // Initial horizontal velocity
+        this.velocityY = 5*Math.random(); // Initial vertical velocity
     }
 	
 	// Getter and Setter for position
@@ -64,10 +65,14 @@ public class Ball {
     public void setRestitutionCoefficient(double restitutionCoefficient) {
         this.restitutionCoefficient = restitutionCoefficient;
     }
+    
+    public void setSpeedCoefficient(double newCoefficient) {
+    	this.speedCoefficient = newCoefficient;
+    }
 
     // Update the position of the ball based on its velocity
     public void updatePosition() {
-        circle.setCenterX(circle.getCenterX() + velocityX);
-        circle.setCenterY(circle.getCenterY() + velocityY);
+        circle.setCenterX(circle.getCenterX() + velocityX * speedCoefficient);
+        circle.setCenterY(circle.getCenterY() + velocityY * speedCoefficient);
     }
 }

@@ -8,15 +8,15 @@ public class PhysicsEngine {
 	private Pane gamePane;
 	private double gravity = 0.98; // Adjustable
 	private double energyLossFactorBetweenWall = 1.0; // Factor to simulate energy loss in collisions between wall
-	private double energyLossFactorBetweenBall = 1.0; // Fator to simulate energy loss in collisions between balls
+	private double energyLossFactorBetweenBall = 1.0; // Factor to simulate energy loss in collisions between balls
 	public PhysicsEngine(Pane gamePane) {
 		this.gamePane = gamePane;
 	}
 	
 	public void updateBall(Ball ball, List<Ball> balls) {
 		// Apply gravity
-        ball.setVelocityY(ball.getVelocityY() + gravity);
-
+        // ball.setVelocityY(ball.getVelocityY() + gravity);
+		
         // Update position based on current velocity
         ball.updatePosition();
 
