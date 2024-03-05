@@ -2,6 +2,7 @@ package application;
 
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.input.MouseEvent;
 
 public class Ball {
 	private Circle circle;
@@ -10,13 +11,63 @@ public class Ball {
 	private double speedCoefficient = 1.0;
 	// Coefficient of Restitution (0 = no bounce, 1 = perfect bounce)
 	private double restitutionCoefficient = 0.8;
-
+	// Variables to store the difference between the ball's position and mouse position
+    private double dragDeltaX, dragDeltaY;
+    private long lastDragTime; // Time of the last drag event
+    private double lastDragX, lastDragY; // Position of the last drag event
+	private double releaseVelocityX, releaseVelocityY;
+    
 	public Ball(double centerX, double centerY, double radius, Color color) {
         this.circle = new Circle(centerX, centerY, radius);
         this.circle.setFill(color);
         this.velocityX = -(10*Math.random())+5; // Initial horizontal velocity
         this.velocityY = 5*Math.random(); // Initial vertical velocity
+        enableDrag();
     }
+	
+	private void enableDrag() {
+		this.circle.setOnMousePressed((MouseEvent event) -> {
+			// Calculate the difference between the ball's position and the mouse's position
+            dragDeltaX = circle.getCenterX() - event.getSceneX();
+            dragDeltaY = circle.getCenterY() - event.getSceneY();
+            // record the position and time when the ball is selected
+            lastDragX = event.getSceneX();
+            lastDragY = event.getSceneY();
+            lastDragTime = System.currentTimeMillis();
+            // set the velocity to be 0 when the ball is dragged
+            this.velocityX = 0;
+            this.velocityY = 0;
+            // can add code here to visually indicate that the ball is selected			
+		});
+		
+		this.circle.setOnMouseDragged((MouseEvent event) -> {
+			// Update the position of the ball as it is dragged
+            double newX = event.getSceneX() + dragDeltaX;
+            double newY = event.getSceneY() + dragDeltaY;
+            setX(newX);
+            setY(newY);			
+            long currentTime = System.currentTimeMillis();
+            long timeDiff = currentTime - lastDragTime;
+            if (timeDiff > 0) { // Prevent division by zero
+                double speedX = (newX - lastDragX) / timeDiff;
+                double speedY = (newY - lastDragY) / timeDiff;
+                // Store these for use on release
+                releaseVelocityX = speedX * 5; // Adjust multiplier as needed for speed scaling
+                releaseVelocityY = speedY * 5;
+            }
+            lastDragX = newX;
+            lastDragY = newY;
+            lastDragTime = currentTime;
+		});
+		// Add an onMouseReleased handler to perform any actions when the mouse is released
+		circle.setOnMouseReleased((MouseEvent event) -> {
+			velocityX = releaseVelocityX;
+			velocityY = releaseVelocityY;
+			releaseVelocityX = 0;
+			releaseVelocityY = 0;            
+        });
+	}
+		
 	
 	// Getter and Setter for position
     public double getX() {
