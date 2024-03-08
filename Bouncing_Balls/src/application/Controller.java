@@ -8,8 +8,9 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Slider;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-
-
+import javafx.scene.paint.RadialGradient;
+import javafx.scene.paint.Stop;
+import javafx.scene.paint.CycleMethod;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,16 +27,13 @@ public class Controller {
 	private PhysicsEngine physicsEngine;
 	private List<Ball> ball_list = new ArrayList<>();
 	
-	public void initialize() {
-		
+	public void initialize() {		
 		size_slider.valueProperty().addListener(new ChangeListener<Number>() {	
 			@Override
 			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
 				// Could be used as change a specific ball's size
-			}
-			
-		});	
-		
+			}			
+		});		
 		speed_slider.valueChangingProperty().addListener(new ChangeListener<Boolean>() {
 			@Override
 			public void changed(ObservableValue<? extends Boolean> observable, Boolean wasChanging, Boolean isChanging) {
@@ -46,10 +44,8 @@ public class Controller {
 					}
 				}
 			}
-		});
-		
-		physicsEngine = new PhysicsEngine(ballPane);
-		
+		});		
+		physicsEngine = new PhysicsEngine(ballPane);		
 		setupAnimationLoop();
 	}
 	
@@ -64,6 +60,7 @@ public class Controller {
 		}.start();
 	}
 	
+	// ----------------------- Buttons Functionalities ------------------------------ //
 	// Method to add one Ball at a random location
 	@FXML
 	void addBall(ActionEvent e) {
@@ -74,18 +71,21 @@ public class Controller {
         ballPane.getChildren().add(ball.getCircle()); // Add the ball's Circle to the pane		
 	}
 	
-	
-	
 	// Method to change the color of all balls
     @FXML
     void changeColor(ActionEvent e) {
-        for (Ball ball : ball_list) {
-            Color newColor = new Color(Math.random(),Math.random(),Math.random(),1.0); // Random color
-            ball.getCircle().setFill(newColor);
+    	for (Ball ball : ball_list) {
+            Color newColor = new Color(Math.random(), Math.random(), Math.random(), 1.0); // Random color
+            Stop[] stops = new Stop[] {
+                    new Stop(0, newColor.brighter()),  
+                    new Stop(1, newColor.darker().darker())
+            };
+            RadialGradient gradient = new RadialGradient(0, 0, 0.7, 0.3, 0.5, true, CycleMethod.NO_CYCLE, stops);
+            ball.getCircle().setFill(gradient);
         }
     }
 	
-	// Clear the board(remove all the balls
+	// Clear the board(remove all the balls)
     @FXML
     void clearBoard(ActionEvent e) {
     	// Iterate through the list of balls and remove each from the gamePane
@@ -95,5 +95,13 @@ public class Controller {
         // Clear the list of Ball objects
         ball_list.clear();
     }
-
+    
+    // Freeze all the balls on the board
+    @FXML
+    void freezeBoard(ActionEvent e) {
+    	for (Ball ball : ball_list) {
+    		ball.setVelocityX(0);
+    		ball.setVelocityY(0);
+    	}
+    }
 }

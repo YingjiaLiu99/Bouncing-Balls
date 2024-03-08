@@ -3,6 +3,9 @@ package application;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.CycleMethod;
+import javafx.scene.paint.RadialGradient;
+import javafx.scene.paint.Stop;
 
 public class Ball {
 	private Circle circle;
@@ -18,8 +21,14 @@ public class Ball {
 	private double releaseVelocityX, releaseVelocityY;
     
 	public Ball(double centerX, double centerY, double radius, Color color) {
-        this.circle = new Circle(centerX, centerY, radius);
-        this.circle.setFill(color);
+		// Define stops for the gradient
+		Stop[] stops = new Stop[] {
+				new Stop(0, color.brighter()),
+			    new Stop(1, color.darker().darker())
+		};		
+		RadialGradient gradient = new RadialGradient(0, 0, 0.7, 0.3, 0.5, true, CycleMethod.NO_CYCLE, stops);
+        // Create the circle with gradient
+        circle = new Circle(centerX, centerY, radius, gradient);
         this.velocityX = -(10*Math.random())+5; // Initial horizontal velocity
         this.velocityY = 5*Math.random(); // Initial vertical velocity
         enableDrag();
