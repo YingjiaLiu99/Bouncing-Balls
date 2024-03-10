@@ -11,9 +11,6 @@ public class Ball {
 	private Circle circle;
 	private double velocityX;
 	private double velocityY;
-	private double speedCoefficient = 1.0;
-	// Coefficient of Restitution (0 = no bounce, 1 = perfect bounce)
-	private double restitutionCoefficient = 0.8;
 	// Variables to store the difference between the ball's position and mouse position
     private double dragDeltaX, dragDeltaY;
     private long lastDragTime; // Time of the last drag event
@@ -117,22 +114,9 @@ public class Ball {
         return circle;
     }
 
-    // Getter and Setter for restitution coefficient
-    public double getRestitutionCoefficient() {
-        return restitutionCoefficient;
-    }
-
-    public void setRestitutionCoefficient(double restitutionCoefficient) {
-        this.restitutionCoefficient = restitutionCoefficient;
-    }
-    
-    public void setSpeedCoefficient(double newCoefficient) {
-    	this.speedCoefficient = newCoefficient;
-    }
-
     // Update the position of the ball based on its velocity
     public void updatePosition() {
-        circle.setCenterX(circle.getCenterX() + velocityX * speedCoefficient);
-        circle.setCenterY(circle.getCenterY() + velocityY * speedCoefficient);
+        circle.setCenterX(circle.getCenterX() + velocityX * Constants.SPEED_COEFFICIENT);
+        circle.setCenterY(circle.getCenterY() + velocityY * Constants.SPEED_COEFFICIENT);
     }
 }
